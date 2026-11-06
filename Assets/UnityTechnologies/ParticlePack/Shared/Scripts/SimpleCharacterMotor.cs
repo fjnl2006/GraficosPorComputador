@@ -2,7 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
+namespace UnityTechnologies.ParticlePack
+{
 [RequireComponent(typeof(CharacterController))]
 public class SimpleCharacterMotor : MonoBehaviour
 {
@@ -20,6 +23,9 @@ public class SimpleCharacterMotor : MonoBehaviour
     [Space]
     [Header("Smoothing")]
     public float movementAcceleration = 1;
+
+    // Matches the sensitivity of the old Input Manager "Mouse X/Y" axes.
+    const float k_MouseSensitivity = 0.1f;
 
     CharacterController controller;
     Vector3 movement, finalMovement;
@@ -43,8 +49,9 @@ public class SimpleCharacterMotor : MonoBehaviour
 
     void UpdateLookRotation()
     {
-        var x = Input.GetAxis("Mouse Y");
-        var y = Input.GetAxis("Mouse X");
+        var mouseDelta = Mouse.current != null ? Mouse.current.delta.ReadValue() * k_MouseSensitivity : Vector2.zero;
+        var x = mouseDelta.y;
+        var y = mouseDelta.x;
 
         x *= invertY ? -1 : 1;
         targetRotation = transform.localRotation * Quaternion.AngleAxis(y * lookSpeed * Time.deltaTime, Vector3.up);
@@ -58,11 +65,10 @@ public class SimpleCharacterMotor : MonoBehaviour
     {
         if (controller.isGrounded)
         {
-            var x = Input.GetAxis("Horizontal");
-            var z = Input.GetAxis("Vertical");
-            var run = Input.GetKey(KeyCode.LeftShift);
+            var move = ReadMoveInput();
+            var run = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
 
-            var translation = new Vector3(x, 0, z);
+            var translation = new Vector3(move.x, 0, move.y);
             speed = run ? runSpeed : walkSpeed;
             movement = transform.TransformDirection(translation * speed);
         }
@@ -73,4 +79,24 @@ public class SimpleCharacterMotor : MonoBehaviour
         finalMovement = Vector3.Lerp(finalMovement, movement, Time.deltaTime * movementAcceleration);
         controller.Move(finalMovement * Time.deltaTime);
     }
+
+    // WASD / arrow keys and the gamepad left stick, like the old "Horizontal" and "Vertical" axes.
+    static Vector2 ReadMoveInput()
+    {
+        var move = Vector2.zero;
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) move.x -= 1;
+            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) move.x += 1;
+            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) move.y -= 1;
+            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) move.y += 1;
+        }
+        if (Gamepad.current != null)
+            move += Gamepad.current.leftStick.ReadValue();
+        move.x = Mathf.Clamp(move.x, -1, 1);
+        move.y = Mathf.Clamp(move.y, -1, 1);
+        return move;
+    }
+}
 }

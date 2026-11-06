@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace UnityTechnologies.ParticlePack
+{
 public class SpawnEffect : MonoBehaviour {
 
     public float spawnEffectTime = 2;
@@ -43,4 +45,5 @@ public class SpawnEffect : MonoBehaviour {
         _renderer.material.SetFloat(shaderProperty, fadeIn.Evaluate( Mathf.InverseLerp(0, spawnEffectTime, timer)));
         
     }
+}
 }
