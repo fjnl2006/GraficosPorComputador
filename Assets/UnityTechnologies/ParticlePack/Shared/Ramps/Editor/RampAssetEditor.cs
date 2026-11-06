@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEngine;
 
 
+namespace UnityTechnologies.ParticlePack
+{
     [CustomEditor(typeof(RampAsset))]
     public class RampAssetEditor : Editor
     {
@@ -31,3 +33,4 @@ using UnityEngine;
             AssetDatabase.Refresh();
         }
     }
+}

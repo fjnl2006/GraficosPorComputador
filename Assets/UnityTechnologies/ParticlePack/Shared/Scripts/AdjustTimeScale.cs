@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.InputSystem;
 
 
+namespace UnityTechnologies.ParticlePack
+{
 public class AdjustTimeScale : MonoBehaviour
 {
     TextMeshProUGUI textMesh;
@@ -14,7 +17,9 @@ public class AdjustTimeScale : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+        var scroll = Mouse.current != null ? Mouse.current.scroll.ReadValue().y : 0f;
+
+        if (scroll > 0f)
         {
             if (Time.timeScale < 1.0F)
             {
@@ -29,7 +34,7 @@ public class AdjustTimeScale : MonoBehaviour
             }
           
         }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+        else if (scroll < 0f)
         {
             if (Time.timeScale >= 0.2F)
             {
@@ -50,4 +55,5 @@ public class AdjustTimeScale : MonoBehaviour
         Time.timeScale = 1.0F;
         Time.fixedDeltaTime = 0.02F;
     }
+}
 }

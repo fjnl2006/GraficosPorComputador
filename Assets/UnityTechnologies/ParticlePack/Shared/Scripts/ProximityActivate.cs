@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
+namespace UnityTechnologies.ParticlePack
+{
 public class ProximityActivate : MonoBehaviour
 {
 
@@ -67,7 +70,7 @@ public class ProximityActivate : MonoBehaviour
         target.alpha = Mathf.Clamp01(target.alpha + alpha * Time.deltaTime);
         if (infoPanel != null)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
                 enableInfoPanel = !enableInfoPanel;
             infoPanel.alpha = Mathf.Lerp(infoPanel.alpha, Mathf.Clamp01(enableInfoPanel ? alpha : 0), Time.deltaTime * 10);
         }
@@ -81,4 +84,5 @@ public class ProximityActivate : MonoBehaviour
         }
     }
 
+}
 }

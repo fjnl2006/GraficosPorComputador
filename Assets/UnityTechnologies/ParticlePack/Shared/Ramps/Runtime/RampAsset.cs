@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+namespace UnityTechnologies.ParticlePack
+{
     [CreateAssetMenu]
     public class RampAsset : ScriptableObject
     {
@@ -11,3 +13,4 @@ using UnityEngine;
         public bool up = false;
         public bool overwriteExisting = true;
     }
+}
